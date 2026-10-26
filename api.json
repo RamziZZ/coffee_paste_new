@@ -1,0 +1,6743 @@
+{
+  "components": {
+    "schemas": {
+      "AdjustStockRequest": {
+        "properties": {
+          "change": {
+            "description": "Inkremental stok (boleh negatif)",
+            "nullable": true,
+            "type": "integer"
+          },
+          "low_stock_threshold": {
+            "minimum": 0,
+            "nullable": true,
+            "type": "integer"
+          },
+          "menu_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "set_qty": {
+            "minimum": 0,
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "menu_id"
+        ],
+        "type": "object"
+      },
+      "AuthUser": {
+        "properties": {
+          "email": {
+            "example": "budi@mail.com",
+            "format": "email",
+            "type": "string"
+          },
+          "id": {
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_active": {
+            "example": true,
+            "type": "boolean"
+          },
+          "name": {
+            "example": "Budi",
+            "type": "string"
+          },
+          "phone": {
+            "example": "081234567890",
+            "nullable": true,
+            "type": "string"
+          },
+          "role": {
+            "example": "customer",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CancelOrderRequest": {
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CloseShiftRequest": {
+        "properties": {
+          "closing_cash": {
+            "format": "float",
+            "minimum": 0,
+            "type": "number"
+          },
+          "notes": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateOrderItem": {
+        "properties": {
+          "item_note": {
+            "maxLength": 100,
+            "nullable": true,
+            "type": "string"
+          },
+          "menu_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "qty": {
+            "maximum": 99,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "menu_id",
+          "qty"
+        ],
+        "type": "object"
+      },
+      "CreateOrderItemRequest": {
+        "properties": {
+          "item_note": {
+            "nullable": true,
+            "type": "string"
+          },
+          "menu_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "qty": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "menu_id",
+          "qty"
+        ],
+        "type": "object"
+      },
+      "CreateOrderRequest": {
+        "properties": {
+          "customer_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "discount": {
+            "default": 0,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CreateOrderItem"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "type": "array"
+          },
+          "note": {
+            "maxLength": 500,
+            "nullable": true,
+            "type": "string"
+          },
+          "order_type": {
+            "enum": [
+              "dine_in",
+              "take_away"
+            ],
+            "type": "string"
+          },
+          "table_number": {
+            "maxLength": 20,
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_type",
+          "items"
+        ],
+        "type": "object"
+      },
+      "CreatePaymentRequest": {
+        "properties": {
+          "amount": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "cash_received": {
+            "minimum": 0,
+            "nullable": true,
+            "type": "integer"
+          },
+          "method": {
+            "enum": [
+              "tunai",
+              "qris"
+            ],
+            "type": "string"
+          },
+          "order_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "reference_no": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id",
+          "method",
+          "amount"
+        ],
+        "type": "object"
+      },
+      "CreateReviewRequest": {
+        "properties": {
+          "comment": {
+            "maxLength": 1000,
+            "nullable": true,
+            "type": "string"
+          },
+          "order_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "order_id",
+          "rating"
+        ],
+        "type": "object"
+      },
+      "Favorite": {
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "image_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "menu_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ForgotPasswordRequest": {
+        "properties": {
+          "email": {
+            "format": "email",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "type": "object"
+      },
+      "ForgotPasswordResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "reset_token": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "Token reset password berhasil dibuat",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "HealthResponse": {
+        "properties": {
+          "message": {
+            "example": "Coffee Paste Backend is running",
+            "type": "string"
+          },
+          "status": {
+            "example": "success",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "format": "email",
+            "type": "string"
+          },
+          "password": {
+            "format": "password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object"
+      },
+      "LoginResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "expires_in": {
+            "example": 86400,
+            "type": "integer"
+          },
+          "token_type": {
+            "example": "Bearer",
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/AuthUser"
+          }
+        },
+        "type": "object"
+      },
+      "MenuCategory": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "example": "Coffee",
+            "type": "string"
+          },
+          "sort_order": {
+            "example": 0,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "MenuFilter": {
+        "properties": {
+          "filter_label": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "MenuItem": {
+        "properties": {
+          "category_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "image_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "is_featured": {
+            "example": false,
+            "type": "boolean"
+          },
+          "name": {
+            "example": "Cappuccino",
+            "type": "string"
+          },
+          "price": {
+            "example": 18000,
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "tersedia",
+              "habis"
+            ],
+            "example": "tersedia",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "MenuWriteRequest": {
+        "properties": {
+          "category_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "image_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "is_featured": {
+            "default": false,
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "tersedia",
+              "habis"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "category_id",
+          "name",
+          "price",
+          "status"
+        ],
+        "type": "object"
+      },
+      "Meta": {
+        "properties": {
+          "limit": {
+            "example": 20,
+            "type": "integer"
+          },
+          "page": {
+            "example": 1,
+            "type": "integer"
+          },
+          "total": {
+            "example": 100,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "MidtransConfig": {
+        "properties": {
+          "data": {
+            "properties": {
+              "client_key": {
+                "type": "string"
+              },
+              "environment": {
+                "enum": [
+                  "sandbox",
+                  "production"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "MidtransPayment": {
+        "properties": {
+          "amount": {
+            "type": "integer"
+          },
+          "bank": {
+            "nullable": true,
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "fraud_status": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "masked_card": {
+            "nullable": true,
+            "type": "string"
+          },
+          "midtrans_trans_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "order_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "paid_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "payment_type": {
+            "nullable": true,
+            "type": "string"
+          },
+          "redirect_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "snap_token": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "success",
+              "failed",
+              "expired",
+              "refunded"
+            ],
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "MidtransWebhookRequest": {
+        "properties": {
+          "bank": {
+            "type": "string"
+          },
+          "fraud_status": {
+            "type": "string"
+          },
+          "masked_card": {
+            "type": "string"
+          },
+          "order_id": {
+            "type": "string"
+          },
+          "payment_type": {
+            "type": "string"
+          },
+          "signature_key": {
+            "type": "string"
+          },
+          "transaction_id": {
+            "type": "string"
+          },
+          "transaction_status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id",
+          "signature_key"
+        ],
+        "type": "object"
+      },
+      "MidtransWebhookResponse": {
+        "properties": {
+          "message": {
+            "example": "Notifikasi berhasil diproses",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "Notification": {
+        "properties": {
+          "body": {
+            "nullable": true,
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_read": {
+            "type": "boolean"
+          },
+          "ref_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "example": "stock_low",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "NotificationMeta": {
+        "properties": {
+          "limit": {
+            "example": 20,
+            "type": "integer"
+          },
+          "page": {
+            "example": 1,
+            "type": "integer"
+          },
+          "total": {
+            "example": 100,
+            "type": "integer"
+          },
+          "unread_count": {
+            "example": 3,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "OpenShiftRequest": {
+        "properties": {
+          "notes": {
+            "nullable": true,
+            "type": "string"
+          },
+          "opening_cash": {
+            "format": "float",
+            "minimum": 0,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "Order": {
+        "properties": {
+          "cancel_reason": {
+            "nullable": true,
+            "type": "string"
+          },
+          "cashier_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "customer_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "customer_name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "discount": {
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "item_count": {
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            },
+            "type": "array"
+          },
+          "note": {
+            "nullable": true,
+            "type": "string"
+          },
+          "order_code": {
+            "example": "CP-261012-K7M2Q",
+            "type": "string"
+          },
+          "order_type": {
+            "enum": [
+              "dine_in",
+              "take_away"
+            ],
+            "type": "string"
+          },
+          "ordered_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "kasir",
+              "customer_app"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "menunggu",
+              "proses",
+              "siap",
+              "selesai",
+              "dibatalkan"
+            ],
+            "type": "string"
+          },
+          "status_logs": {
+            "items": {
+              "$ref": "#/components/schemas/OrderStatusLog"
+            },
+            "type": "array"
+          },
+          "subtotal": {
+            "type": "integer"
+          },
+          "table_number": {
+            "nullable": true,
+            "type": "string"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "OrderItem": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "item_note": {
+            "nullable": true,
+            "type": "string"
+          },
+          "menu_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "menu_name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "qty": {
+            "type": "integer"
+          },
+          "subtotal": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "OrderStatusLog": {
+        "properties": {
+          "changed_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "changed_by": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "changed_by_name": {
+            "type": "string"
+          },
+          "note": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "menunggu",
+              "proses",
+              "siap",
+              "selesai",
+              "dibatalkan"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Payment": {
+        "properties": {
+          "amount": {
+            "type": "integer"
+          },
+          "cash_received": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "change_amount": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "method": {
+            "enum": [
+              "tunai",
+              "qris"
+            ],
+            "type": "string"
+          },
+          "order_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "paid_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "received_by": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "reference_no": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "success",
+              "failed",
+              "expired",
+              "refunded"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RegisterRequest": {
+        "properties": {
+          "email": {
+            "format": "email",
+            "type": "string"
+          },
+          "name": {
+            "minLength": 3,
+            "type": "string"
+          },
+          "password": {
+            "format": "password",
+            "minLength": 8,
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+        "type": "object"
+      },
+      "ResetPasswordRequest": {
+        "properties": {
+          "new_password": {
+            "format": "password",
+            "minLength": 8,
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "new_password"
+        ],
+        "type": "object"
+      },
+      "Review": {
+        "properties": {
+          "comment": {
+            "nullable": true,
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "customer_name": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "order_code": {
+            "type": "string"
+          },
+          "order_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SalesReport": {
+        "properties": {
+          "AvgRating": {
+            "example": 4.5,
+            "format": "double",
+            "type": "number"
+          },
+          "EndDate": {
+            "example": "2026-10-19",
+            "type": "string"
+          },
+          "GeneratedAt": {
+            "type": "string"
+          },
+          "Period": {
+            "enum": [
+              "daily",
+              "weekly",
+              "monthly"
+            ],
+            "type": "string"
+          },
+          "ReviewCount": {
+            "example": 10,
+            "type": "integer"
+          },
+          "StartDate": {
+            "example": "2026-10-19",
+            "type": "string"
+          },
+          "StatusBreakdown": {
+            "items": {
+              "$ref": "#/components/schemas/StatusCount"
+            },
+            "type": "array"
+          },
+          "TopMenus": {
+            "items": {
+              "$ref": "#/components/schemas/TopMenu"
+            },
+            "type": "array"
+          },
+          "TotalOrders": {
+            "example": 42,
+            "type": "integer"
+          },
+          "TotalRevenue": {
+            "example": 1250000,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Shift": {
+        "properties": {
+          "cash_difference": {
+            "format": "float",
+            "nullable": true,
+            "type": "number"
+          },
+          "closed_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "closing_cash": {
+            "format": "float",
+            "nullable": true,
+            "type": "number"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "expected_cash": {
+            "format": "float",
+            "nullable": true,
+            "type": "number"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "notes": {
+            "nullable": true,
+            "type": "string"
+          },
+          "opened_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "opening_cash": {
+            "format": "float",
+            "type": "number"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "closed"
+            ],
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SnapPaymentRequest": {
+        "properties": {
+          "order_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "type": "object"
+      },
+      "SnapPaymentResponse": {
+        "properties": {
+          "amount": {
+            "type": "integer"
+          },
+          "order_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "payment_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "redirect_url": {
+            "type": "string"
+          },
+          "snap_token": {
+            "type": "string"
+          },
+          "status": {
+            "example": "pending",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "StatusCount": {
+        "properties": {
+          "Count": {
+            "example": 30,
+            "type": "integer"
+          },
+          "Status": {
+            "example": "selesai",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Stock": {
+        "properties": {
+          "is_low_stock": {
+            "type": "boolean"
+          },
+          "low_stock_threshold": {
+            "type": "integer"
+          },
+          "menu_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "menu_name": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "TopMenu": {
+        "properties": {
+          "MenuID": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "MenuName": {
+            "example": "Es Kopi Susu",
+            "type": "string"
+          },
+          "QtySold": {
+            "example": 55,
+            "type": "integer"
+          },
+          "Rank": {
+            "example": 1,
+            "type": "integer"
+          },
+          "Revenue": {
+            "example": 715000,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "UnreadCount": {
+        "properties": {
+          "data": {
+            "properties": {
+              "unread_count": {
+                "example": 3,
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "status": {
+            "example": "success",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateOrderItemRequest": {
+        "properties": {
+          "item_note": {
+            "nullable": true,
+            "type": "string"
+          },
+          "qty": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "qty"
+        ],
+        "type": "object"
+      },
+      "UpdateOrderStatusRequest": {
+        "properties": {
+          "cancel_reason": {
+            "maxLength": 500,
+            "nullable": true,
+            "type": "string"
+          },
+          "note": {
+            "maxLength": 255,
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "proses",
+              "siap",
+              "selesai",
+              "dibatalkan"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "type": "object"
+      },
+      "UpdatePaymentStatusRequest": {
+        "properties": {
+          "cash_received": {
+            "minimum": 0,
+            "nullable": true,
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "success",
+              "failed",
+              "expired",
+              "refunded"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "type": "object"
+      },
+      "UpdateProfileRequest": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "nullable": true,
+            "type": "string"
+          },
+          "photo_url": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "UpdateUserStatusRequest": {
+        "properties": {
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "is_active"
+        ],
+        "type": "object"
+      },
+      "User": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "email": {
+            "format": "email",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_active": {
+            "example": true,
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "pending_email": {
+            "nullable": true,
+            "type": "string"
+          },
+          "phone": {
+            "nullable": true,
+            "type": "string"
+          },
+          "photo_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "customer",
+              "kasir",
+              "admin"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "API POS Coffee Paste: auth, menu, pesanan, pembayaran (tunai/QRIS/Midtrans), stok, review, notifikasi, laporan. Sumber kebenaran: routes/routes.go dan DTO per modul.",
+    "title": "Coffee Paste Backend API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/auth/forgot-password": {
+      "post": {
+        "description": "Membuat token reset (15 menit). Respons memuat reset_token.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForgotPasswordResponse"
+                }
+              }
+            },
+            "description": "Token reset password berhasil dibuat"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "summary": "Lupa password",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "description": "Login email + password.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "description": "Login berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          }
+        },
+        "summary": "Login",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "description": "Logout di sisi client (token stateless).",
+        "responses": {
+          "200": {
+            "description": "Logout berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Logout",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "description": "Profil user dari token.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUser"
+                }
+              }
+            },
+            "description": "Data user berhasil diambil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Profil login",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "description": "Membuat akun customer sekaligus baris customers.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUser"
+                }
+              }
+            },
+            "description": "Registrasi customer berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "summary": "Register customer",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "description": "Reset password memakai token.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Password berhasil diubah"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          }
+        },
+        "summary": "Reset password",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/favorites/": {
+      "get": {
+        "description": "Menu favorit customer yang login (envelope status).",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Favorite"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Daftar favorit",
+        "tags": [
+          "Customer"
+        ]
+      }
+    },
+    "/favorites/{menu_id}": {
+      "delete": {
+        "description": "Hapus menu dari favorit.",
+        "parameters": [
+          {
+            "description": "ID menu",
+            "in": "path",
+            "name": "menu_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Favorite berhasil dihapus"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Hapus favorit",
+        "tags": [
+          "Customer"
+        ]
+      },
+      "post": {
+        "description": "Tambah menu ke favorit.",
+        "parameters": [
+          {
+            "description": "ID menu",
+            "in": "path",
+            "name": "menu_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Favorite"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Tambah favorit",
+        "tags": [
+          "Customer"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "Cek status server.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Coffee Paste Backend is running",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Server berjalan"
+          }
+        },
+        "summary": "Health check",
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/inventory": {
+      "get": {
+        "description": "Khusus kasir/admin. Query: low_stock, page, limit.",
+        "parameters": [
+          {
+            "description": "Hanya stok menipis",
+            "in": "query",
+            "name": "low_stock",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Halaman",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Ukuran halaman",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 20,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/Stock"
+                      },
+                      "type": "array"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Daftar stok",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/adjust": {
+      "post": {
+        "description": "Khusus kasir/admin. Isi change (inkremental) atau set_qty (langsung).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdjustStockRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stock"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Sesuaikan stok",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/{menu_id}": {
+      "get": {
+        "description": "Khusus kasir/admin.",
+        "parameters": [
+          {
+            "description": "ID menu",
+            "in": "path",
+            "name": "menu_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stock"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Detail stok",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/menu": {
+      "get": {
+        "description": "Menu publik. Query opsional: q, category_id, status.",
+        "parameters": [
+          {
+            "description": "Pencarian nama menu (ILIKE)",
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter kategori (UUID)",
+            "in": "query",
+            "name": "category_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter status: tersedia|habis",
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MenuItem"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Daftar menu berhasil diambil"
+          }
+        },
+        "summary": "Daftar menu",
+        "tags": [
+          "Menu"
+        ]
+      },
+      "post": {
+        "description": "Khusus admin.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MenuWriteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItem"
+                }
+              }
+            },
+            "description": "Menu berhasil ditambahkan"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Tambah menu",
+        "tags": [
+          "Admin - Menu"
+        ]
+      }
+    },
+    "/menu/categories": {
+      "get": {
+        "description": "Daftar kategori terurut sort_order.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MenuCategory"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Kategori menu berhasil diambil"
+          }
+        },
+        "summary": "Kategori menu",
+        "tags": [
+          "Menu"
+        ]
+      }
+    },
+    "/menu/featured": {
+      "get": {
+        "description": "Menu berflag is_featured dengan status tersedia.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MenuItem"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Menu featured berhasil diambil"
+          }
+        },
+        "summary": "Menu unggulan",
+        "tags": [
+          "Menu"
+        ]
+      }
+    },
+    "/menu/filters": {
+      "get": {
+        "description": "Filter chip diturunkan dari kategori.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MenuFilter"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Filter menu berhasil diambil"
+          }
+        },
+        "summary": "Filter menu",
+        "tags": [
+          "Menu"
+        ]
+      }
+    },
+    "/menu/{id}": {
+      "delete": {
+        "description": "Hapus permanen. Gagal 409 bila menu masih dipakai pesanan/stok.",
+        "parameters": [
+          {
+            "description": "ID menu",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Menu berhasil dihapus"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Hapus menu",
+        "tags": [
+          "Admin - Menu"
+        ]
+      },
+      "get": {
+        "description": "Detail satu menu.",
+        "parameters": [
+          {
+            "description": "ID menu",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItem"
+                }
+              }
+            },
+            "description": "Detail menu berhasil diambil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "summary": "Detail menu",
+        "tags": [
+          "Menu"
+        ]
+      },
+      "put": {
+        "description": "Khusus admin.",
+        "parameters": [
+          {
+            "description": "ID menu",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MenuWriteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItem"
+                }
+              }
+            },
+            "description": "Menu berhasil diperbarui"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Ubah menu",
+        "tags": [
+          "Admin - Menu"
+        ]
+      }
+    },
+    "/notifications": {
+      "get": {
+        "description": "Notifikasi milik user yang login. Query: page, limit.",
+        "parameters": [
+          {
+            "description": "Halaman",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Ukuran halaman",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 20,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/Notification"
+                      },
+                      "type": "array"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/NotificationMeta"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Daftar notifikasi",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/read-all": {
+      "patch": {
+        "description": "Tandai seluruh notifikasi user sudah dibaca.",
+        "responses": {
+          "200": {
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Tandai semua sudah dibaca",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/unread-count": {
+      "get": {
+        "description": "Hitung notifikasi is_read = false.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadCount"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Jumlah belum dibaca",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/{id}/read": {
+      "patch": {
+        "description": "Tandai satu notifikasi sudah dibaca.",
+        "parameters": [
+          {
+            "description": "ID notifikasi",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Tandai sudah dibaca",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/orders": {
+      "get": {
+        "description": "Filter: status, date_from, date_to, page, limit.",
+        "parameters": [
+          {
+            "description": "Filter status pesanan",
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Tanggal mulai (YYYY-MM-DD)",
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Tanggal akhir (YYYY-MM-DD)",
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Halaman",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Ukuran halaman",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 20,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/Order"
+                      },
+                      "type": "array"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Daftar pesanan",
+        "tags": [
+          "Orders"
+        ]
+      },
+      "post": {
+        "description": "Stok dicek saat membuat; status awal menunggu.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            },
+            "description": "Pesanan berhasil dibuat"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Buat pesanan",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "description": "Termasuk items dan status_logs.",
+        "parameters": [
+          {
+            "description": "ID pesanan",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Detail pesanan",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/orders/{id}/cancel": {
+      "post": {
+        "description": "Body opsional berisi reason.",
+        "parameters": [
+          {
+            "description": "ID pesanan",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Batalkan pesanan",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/orders/{id}/items": {
+      "get": {
+        "description": "Item pada pesanan.",
+        "parameters": [
+          {
+            "description": "ID pesanan",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/OrderItem"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Item pesanan",
+        "tags": [
+          "Order Items"
+        ]
+      },
+      "post": {
+        "description": "Khusus kasir/admin.",
+        "parameters": [
+          {
+            "description": "ID pesanan",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderItemRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderItem"
+                }
+              }
+            },
+            "description": "Item berhasil ditambahkan"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Tambah item pesanan",
+        "tags": [
+          "Order Items"
+        ]
+      }
+    },
+    "/orders/{id}/items/{item_id}": {
+      "delete": {
+        "description": "Khusus kasir/admin.",
+        "parameters": [
+          {
+            "description": "ID pesanan",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID item",
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item berhasil dihapus"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Hapus item pesanan",
+        "tags": [
+          "Order Items"
+        ]
+      },
+      "put": {
+        "description": "Khusus kasir/admin.",
+        "parameters": [
+          {
+            "description": "ID pesanan",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID item",
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderItemRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderItem"
+                }
+              }
+            },
+            "description": "Item berhasil diperbarui"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Ubah item pesanan",
+        "tags": [
+          "Order Items"
+        ]
+      }
+    },
+    "/orders/{id}/payments": {
+      "get": {
+        "description": "Riwayat pembayaran sebuah pesanan.",
+        "parameters": [
+          {
+            "description": "ID pesanan",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Payment"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Daftar pembayaran berhasil diambil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Pembayaran per pesanan",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/orders/{id}/status": {
+      "patch": {
+        "description": "Khusus kasir/admin. Status selesai memotong stok.",
+        "parameters": [
+          {
+            "description": "ID pesanan",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Ubah status pesanan",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/payments": {
+      "post": {
+        "description": "Khusus kasir/admin. amount wajib sama dengan total pesanan (setelah diskon).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            },
+            "description": "Pembayaran berhasil dibuat"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Buat pembayaran",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/payments/midtrans/config": {
+      "get": {
+        "description": "Client key \u0026 environment untuk Snap.js.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MidtransConfig"
+                }
+              }
+            },
+            "description": "Berhasil"
+          }
+        },
+        "summary": "Konfigurasi Midtrans",
+        "tags": [
+          "Midtrans"
+        ]
+      }
+    },
+    "/payments/midtrans/order/{order_id}": {
+      "get": {
+        "description": "Pembayaran Midtrans terbaru untuk pesanan.",
+        "parameters": [
+          {
+            "description": "ID pesanan",
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MidtransPayment"
+                }
+              }
+            },
+            "description": "Status pembayaran berhasil diambil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Status Midtrans per pesanan",
+        "tags": [
+          "Midtrans"
+        ]
+      }
+    },
+    "/payments/midtrans/snap": {
+      "post": {
+        "description": "Customer/kasir/admin. Mengembalikan snap_token \u0026 redirect_url.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SnapPaymentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapPaymentResponse"
+                }
+              }
+            },
+            "description": "Snap transaction berhasil dibuat"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Buat Snap transaction",
+        "tags": [
+          "Midtrans"
+        ]
+      }
+    },
+    "/payments/midtrans/webhook": {
+      "post": {
+        "description": "Tanpa auth; tanda tangan diverifikasi server-side.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MidtransWebhookRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MidtransWebhookResponse"
+                }
+              }
+            },
+            "description": "Notifikasi berhasil diproses"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "summary": "Webhook Midtrans",
+        "tags": [
+          "Midtrans"
+        ]
+      }
+    },
+    "/payments/midtrans/{id}": {
+      "get": {
+        "description": "Detail berdasarkan ID pembayaran Midtrans.",
+        "parameters": [
+          {
+            "description": "ID pembayaran Midtrans",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MidtransPayment"
+                }
+              }
+            },
+            "description": "Detail pembayaran berhasil diambil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Detail pembayaran Midtrans",
+        "tags": [
+          "Midtrans"
+        ]
+      }
+    },
+    "/payments/{id}": {
+      "get": {
+        "description": "Detail pembayaran berdasarkan ID.",
+        "parameters": [
+          {
+            "description": "ID pembayaran",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            },
+            "description": "Detail pembayaran berhasil diambil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Detail pembayaran",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/payments/{id}/status": {
+      "patch": {
+        "description": "Khusus kasir/admin. Transisi: pending-\u003esuccess/failed/expired, success-\u003erefunded.",
+        "parameters": [
+          {
+            "description": "ID pembayaran",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePaymentStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            },
+            "description": "Status pembayaran berhasil diperbarui"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Ubah status pembayaran",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/reports/sales": {
+      "get": {
+        "description": "Khusus admin. Omzet, ringkasan status, top menu, rating.",
+        "parameters": [
+          {
+            "description": "Periode laporan (wajib)",
+            "in": "query",
+            "name": "period",
+            "schema": {
+              "enum": [
+                "daily",
+                "weekly",
+                "monthly"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Tanggal acuan YYYY-MM-DD (default hari ini)",
+            "in": "query",
+            "name": "date",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesReport"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Laporan penjualan",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/reports/sales/pdf": {
+      "get": {
+        "description": "Khusus admin. Mengembalikan application/pdf (attachment).",
+        "parameters": [
+          {
+            "description": "Periode laporan (wajib)",
+            "in": "query",
+            "name": "period",
+            "schema": {
+              "enum": [
+                "daily",
+                "weekly",
+                "monthly"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Tanggal acuan YYYY-MM-DD (default hari ini)",
+            "in": "query",
+            "name": "date",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "File PDF laporan penjualan"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Ekspor PDF laporan",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/reviews": {
+      "get": {
+        "description": "Khusus kasir/admin. Filter: user_id, min_rating, max_rating, page, limit.",
+        "parameters": [
+          {
+            "description": "Filter user (UUID)",
+            "in": "query",
+            "name": "user_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Rating minimum",
+            "in": "query",
+            "name": "min_rating",
+            "schema": {
+              "maximum": 5,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Rating maksimum",
+            "in": "query",
+            "name": "max_rating",
+            "schema": {
+              "maximum": 5,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Halaman",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Ukuran halaman",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 20,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/Review"
+                      },
+                      "type": "array"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Semua review",
+        "tags": [
+          "Reviews"
+        ]
+      },
+      "post": {
+        "description": "Khusus customer. Pesanan harus selesai; satu review per pesanan.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Review"
+                }
+              }
+            },
+            "description": "Review berhasil dibuat"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Buat review",
+        "tags": [
+          "Reviews"
+        ]
+      }
+    },
+    "/reviews/mine": {
+      "get": {
+        "description": "Review milik customer yang login.",
+        "parameters": [
+          {
+            "description": "Halaman",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Ukuran halaman",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 20,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/Review"
+                      },
+                      "type": "array"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Review saya",
+        "tags": [
+          "Reviews"
+        ]
+      }
+    },
+    "/reviews/{id}": {
+      "delete": {
+        "description": "Moderasi review, khusus admin.",
+        "parameters": [
+          {
+            "description": "ID review",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review berhasil dihapus"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Hapus review",
+        "tags": [
+          "Admin - Reviews"
+        ]
+      },
+      "get": {
+        "description": "Detail satu review.",
+        "parameters": [
+          {
+            "description": "ID review",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Review"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Detail review",
+        "tags": [
+          "Reviews"
+        ]
+      }
+    },
+    "/shifts": {
+      "get": {
+        "description": "Riwayat shift milik user yang login.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Shift"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Berhasil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Riwayat shift saya",
+        "tags": [
+          "Shifts"
+        ]
+      },
+      "post": {
+        "description": "Satu shift terbuka per user.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenShiftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shift"
+                }
+              }
+            },
+            "description": "Shift berhasil dibuka"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Buka shift",
+        "tags": [
+          "Shifts"
+        ]
+      }
+    },
+    "/shifts/active": {
+      "get": {
+        "description": "Shift berstatus open milik user yang login.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/Shift"
+                        }
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Shift aktif berhasil diambil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Shift aktif",
+        "tags": [
+          "Shifts"
+        ]
+      }
+    },
+    "/shifts/{id}/close": {
+      "patch": {
+        "description": "Tutup shift milik sendiri; expected_cash \u0026 cash_difference dihitung server.",
+        "parameters": [
+          {
+            "description": "ID shift",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloseShiftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shift"
+                }
+              }
+            },
+            "description": "Shift berhasil ditutup"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Konflik data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Tutup shift",
+        "tags": [
+          "Shifts"
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "description": "Khusus admin.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Daftar user berhasil diambil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Daftar user",
+        "tags": [
+          "Admin - Users"
+        ]
+      }
+    },
+    "/users/me": {
+      "get": {
+        "description": "Profil user yang login.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Profil berhasil diambil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Profil saya",
+        "tags": [
+          "Users"
+        ]
+      },
+      "put": {
+        "description": "Ubah nama/phone/photo_url.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Profil berhasil diperbarui"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Ubah profil saya",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "description": "Khusus admin.",
+        "parameters": [
+          {
+            "description": "ID user",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Data user berhasil diambil"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Detail user",
+        "tags": [
+          "Admin - Users"
+        ]
+      }
+    },
+    "/users/{id}/status": {
+      "patch": {
+        "description": "Khusus admin; tidak boleh mengubah status diri sendiri.",
+        "parameters": [
+          {
+            "description": "ID user",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Status user berhasil diperbarui"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak memiliki akses"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Data tidak ditemukan"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Ubah status user",
+        "tags": [
+          "Admin - Users"
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "description": "Health check",
+      "name": "System"
+    },
+    {
+      "description": "Login, register, reset password",
+      "name": "Auth"
+    },
+    {
+      "description": "Katalog menu publik",
+      "name": "Menu"
+    },
+    {
+      "description": "CRUD menu (admin)",
+      "name": "Admin - Menu"
+    },
+    {
+      "description": "Fitur customer",
+      "name": "Customer"
+    },
+    {
+      "description": "Pesanan",
+      "name": "Orders"
+    },
+    {
+      "description": "Item pesanan",
+      "name": "Order Items"
+    },
+    {
+      "description": "Pembayaran tunai/QRIS",
+      "name": "Payments"
+    },
+    {
+      "description": "Payment gateway Midtrans",
+      "name": "Midtrans"
+    },
+    {
+      "description": "Profil user",
+      "name": "Users"
+    },
+    {
+      "description": "Manajemen user (admin)",
+      "name": "Admin - Users"
+    },
+    {
+      "description": "Shift kasir",
+      "name": "Shifts"
+    },
+    {
+      "description": "Stok menu",
+      "name": "Inventory"
+    },
+    {
+      "description": "Review customer",
+      "name": "Reviews"
+    },
+    {
+      "description": "Moderasi review (admin)",
+      "name": "Admin - Reviews"
+    },
+    {
+      "description": "Notifikasi in-app",
+      "name": "Notifications"
+    },
+    {
+      "description": "Laporan penjualan (admin)",
+      "name": "Reports"
+    }
+  ]
+}
