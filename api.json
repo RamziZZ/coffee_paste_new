@@ -6667,7 +6667,8 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8080/api/v1"
+      "url": "http://api.ramzi.codes/api/v1",
+      "description": "Backend API coffee paste"
     }
   ],
   "tags": [
