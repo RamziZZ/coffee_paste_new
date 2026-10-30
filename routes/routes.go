@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"context"
 	"net/http"
 
 	"coffee_paste_backend/config"
@@ -58,6 +59,7 @@ import (
 	shiftservice "coffee_paste_backend/internal/shifts/service"
 
 	"coffee_paste_backend/middleware"
+	"coffee_paste_backend/pkg/fcm"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -86,9 +88,13 @@ func SetupRoutes(
 	// =========================
 	// NOTIFICATIONS DEPENDENCIES
 	// =========================
+	fcmClient := fcm.New(context.Background(), cfg.FirebaseCredentialsFile)
 	notificationRepository := notificationrepository.NewNotificationRepository(db)
+	fcmTokenRepository := notificationrepository.NewFCMTokenRepository(db)
 	notificationService := notificationservice.NewNotificationService(
 		notificationRepository,
+		fcmTokenRepository,
+		fcmClient,
 	)
 	notificationHandler := notificationhandler.NewNotificationHandler(
 		notificationService,
@@ -232,6 +238,7 @@ func SetupRoutes(
 	auth := api.Group("/auth")
 	{
 		auth.POST("/login", authHandler.Login)
+		auth.POST("/google", authHandler.GoogleLogin)
 		auth.POST("/forgot-password", authHandler.ForgotPassword)
 		auth.POST("/reset-password", authHandler.ResetPassword)
 		auth.POST("/register", authHandler.RegisterCustomer)
@@ -487,6 +494,10 @@ func SetupRoutes(
 		notifications.GET("/unread-count", notificationHandler.UnreadCount)
 		notifications.PATCH("/:id/read", notificationHandler.MarkRead)
 		notifications.PATCH("/read-all", notificationHandler.MarkAllRead)
+
+		// Device token FCM untuk push notification
+		notifications.POST("/devices", notificationHandler.RegisterDeviceToken)
+		notifications.DELETE("/devices", notificationHandler.DeleteDeviceToken)
 	}
 
 	// =========================

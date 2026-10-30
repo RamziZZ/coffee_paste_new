@@ -178,3 +178,63 @@ func (h *NotificationHandler) MarkAllRead(c *gin.Context) {
 		"message": "Semua notifikasi ditandai sudah dibaca",
 	})
 }
+
+// RegisterDeviceToken mendaftarkan token FCM untuk push notification.
+// POST /api/v1/notifications/devices
+func (h *NotificationHandler) RegisterDeviceToken(c *gin.Context) {
+	userID, ok := getUserID(c)
+	if !ok {
+		return
+	}
+
+	var req dto.RegisterDeviceTokenRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "error",
+			"message": "Data device token tidak valid",
+		})
+		return
+	}
+
+	if err := h.service.RegisterDeviceToken(
+		c.Request.Context(), userID, req,
+	); err != nil {
+		respondError(c, err, "Gagal mendaftarkan device token")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "Device token berhasil didaftarkan",
+	})
+}
+
+// DeleteDeviceToken menghapus token FCM (unregister push notification).
+// DELETE /api/v1/notifications/devices
+func (h *NotificationHandler) DeleteDeviceToken(c *gin.Context) {
+	userID, ok := getUserID(c)
+	if !ok {
+		return
+	}
+
+	var req dto.DeleteDeviceTokenRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "error",
+			"message": "Data device token tidak valid",
+		})
+		return
+	}
+
+	if err := h.service.DeleteDeviceToken(
+		c.Request.Context(), userID, req.FCMToken,
+	); err != nil {
+		respondError(c, err, "Gagal menghapus device token")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "Device token berhasil dihapus",
+	})
+}

@@ -36,7 +36,8 @@ const userSelect = `
 		photo_url,
 		is_active,
 		created_at,
-		pending_email
+		pending_email,
+		google_id
 	FROM users
 `
 
@@ -54,6 +55,7 @@ func scanUser(row pgx.Row) (*model.User, error) {
 		&user.IsActive,
 		&user.CreatedAt,
 		&user.PendingEmail,
+		&user.GoogleID,
 	)
 	if err != nil {
 		return nil, err
@@ -104,6 +106,46 @@ func (r *AuthRepository) FindByID(
 	}
 
 	return user, nil
+}
+
+// FindByGoogleID mencari user berdasarkan Google OAuth subject (sub).
+func (r *AuthRepository) FindByGoogleID(
+	ctx context.Context,
+	googleID string,
+) (*model.User, error) {
+
+	user, err := scanUser(r.db.QueryRow(
+		ctx,
+		userSelect+`WHERE google_id = $1 LIMIT 1`,
+		googleID,
+	))
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+
+		return nil, err
+	}
+
+	return user, nil
+}
+
+// LinkGoogleID menghubungkan akun existing dengan Google OAuth subject.
+func (r *AuthRepository) LinkGoogleID(
+	ctx context.Context,
+	userID string,
+	googleID string,
+) error {
+
+	_, err := r.db.Exec(
+		ctx,
+		`UPDATE users SET google_id = $1 WHERE id = $2`,
+		googleID,
+		userID,
+	)
+
+	return err
 }
 
 func (r *AuthRepository) UpdatePassword(
@@ -167,6 +209,61 @@ func (r *AuthRepository) CreateCustomer(
 		name,
 		email,
 		phone,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return nil, err
+	}
+
+	return r.FindByID(ctx, userID)
+}
+
+// CreateGoogleCustomer membuat user customer dari data Google OAuth
+// (tanpa password_hash) sekaligus baris customers dalam satu transaksi.
+func (r *AuthRepository) CreateGoogleCustomer(
+	ctx context.Context,
+	name string,
+	email string,
+	googleID string,
+	photoURL string,
+) (*model.User, error) {
+
+	tx, err := r.db.Begin(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+
+	var userID string
+
+	err = tx.QueryRow(
+		ctx,
+		`INSERT INTO users (
+			id, role, name, email, password_hash, photo_url, is_active, google_id
+		)
+		VALUES (
+			gen_random_uuid(), 'customer', $1, $2, NULL, NULLIF($3, ''), TRUE, $4
+		)
+		RETURNING id::text`,
+		name,
+		email,
+		photoURL,
+		googleID,
+	).Scan(&userID)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = tx.Exec(
+		ctx,
+		`INSERT INTO customers (id, user_id, name, email)
+		 VALUES (gen_random_uuid(), $1, $2, $3)`,
+		userID,
+		name,
+		email,
 	)
 	if err != nil {
 		return nil, err

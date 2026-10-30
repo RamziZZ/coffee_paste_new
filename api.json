@@ -318,6 +318,52 @@
         ],
         "type": "object"
       },
+      "GoogleLoginRequest": {
+        "properties": {
+          "id_token": {
+            "description": "Google ID token dari Google Sign-In (SDK web/mobile)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id_token"
+        ],
+        "type": "object"
+      },
+      "RegisterDeviceTokenRequest": {
+        "properties": {
+          "device_type": {
+            "enum": [
+              "android",
+              "ios",
+              "web"
+            ],
+            "example": "android",
+            "type": "string"
+          },
+          "fcm_token": {
+            "description": "Registration token dari Firebase Messaging",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fcm_token",
+          "device_type"
+        ],
+        "type": "object"
+      },
+      "DeleteDeviceTokenRequest": {
+        "properties": {
+          "fcm_token": {
+            "description": "Registration token dari Firebase Messaging",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fcm_token"
+        ],
+        "type": "object"
+      },
       "LoginResponse": {
         "properties": {
           "access_token": {
@@ -1521,6 +1567,97 @@
           }
         },
         "summary": "Login",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/google": {
+      "post": {
+        "description": "Login atau daftar otomatis menggunakan Google Sign-In. Kirim ID token dari client; jika email belum terdaftar, user customer baru dibuat.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "description": "Login berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Token Google tidak valid"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Login Google belum dikonfigurasi di server",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Login Google belum dikonfigurasi"
+          }
+        },
+        "summary": "Login dengan Google",
         "tags": [
           "Auth"
         ]
@@ -2973,6 +3110,142 @@
           }
         ],
         "summary": "Daftar notifikasi",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/devices": {
+      "post": {
+        "description": "Daftarkan token FCM dari device untuk push notification.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDeviceTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Data device token tidak valid",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Daftarkan device token FCM",
+        "tags": [
+          "Notifications"
+        ]
+      },
+      "delete": {
+        "description": "Hapus token FCM (unregister push notification).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDeviceTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Berhasil"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Data device token tidak valid",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request tidak valid"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "Pesan kesalahan",
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "error",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tidak terautentikasi"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": null
+          }
+        ],
+        "summary": "Hapus device token FCM",
         "tags": [
           "Notifications"
         ]

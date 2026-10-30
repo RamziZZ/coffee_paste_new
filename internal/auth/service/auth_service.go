@@ -16,6 +16,8 @@ import (
 	authrepository "coffee_paste_backend/internal/auth/repository"
 	"coffee_paste_backend/pkg/jwt"
 	"coffee_paste_backend/pkg/password"
+
+	"google.golang.org/api/idtoken"
 )
 
 var (
@@ -24,6 +26,8 @@ var (
 	ErrPasswordResetToken = errors.New("token reset password tidak valid atau sudah kedaluwarsa")
 	ErrUserNotFound       = errors.New("user tidak ditemukan")
 	ErrEmailAlreadyExists = errors.New("email sudah digunakan")
+	ErrInvalidGoogleToken = errors.New("token Google tidak valid")
+	ErrGoogleNotConfigured = errors.New("login Google belum dikonfigurasi")
 )
 
 type AuthService struct {
@@ -296,4 +300,98 @@ func (s *AuthService) RegisterCustomer(
 	response := mapUserResponse(user)
 
 	return &response, nil
+}
+
+// LoginWithGoogle memverifikasi ID token dari Google Sign-In,
+// lalu mencocokkan/membuat user dan menerbitkan JWT.
+// Jika email belum terdaftar, user customer baru dibuat otomatis.
+func (s *AuthService) LoginWithGoogle(
+	ctx context.Context,
+	req dto.GoogleLoginRequest,
+) (*dto.LoginResponse, error) {
+
+	if s.config.GoogleClientID == "" {
+		return nil, ErrGoogleNotConfigured
+	}
+
+	// Verifikasi ID token terhadap client ID kita
+	payload, err := idtoken.Validate(
+		ctx,
+		req.IDToken,
+		s.config.GoogleClientID,
+	)
+	if err != nil {
+		return nil, ErrInvalidGoogleToken
+	}
+
+	// Ambil klaim standar Google
+	email, _ := payload.Claims["email"].(string)
+	name, _ := payload.Claims["name"].(string)
+	picture, _ := payload.Claims["picture"].(string)
+	emailVerified, _ := payload.Claims["email_verified"].(bool)
+
+	email = strings.TrimSpace(strings.ToLower(email))
+	if email == "" || !emailVerified {
+		return nil, ErrInvalidGoogleToken
+	}
+
+	if name == "" {
+		name = strings.Split(email, "@")[0]
+	}
+
+	// Cari user berdasarkan email dulu
+	user, err := s.repository.FindByEmail(ctx, email)
+
+	if err != nil && !errors.Is(err, authrepository.ErrUserNotFound) {
+		return nil, err
+	}
+
+	if errors.Is(err, authrepository.ErrUserNotFound) {
+		// User belum ada: buat customer baru dari data Google
+		user, err = s.repository.CreateGoogleCustomer(
+			ctx,
+			name,
+			email,
+			payload.Subject,
+			picture,
+		)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		// User sudah ada: cek aktif & link Google ID jika belum
+		if !user.IsActive {
+			return nil, ErrUserInactive
+		}
+
+		if user.GoogleID == nil || *user.GoogleID == "" {
+			if err := s.repository.LinkGoogleID(
+				ctx,
+				user.ID,
+				payload.Subject,
+			); err != nil {
+				return nil, err
+			}
+			user.GoogleID = &payload.Subject
+		}
+	}
+
+	const tokenDuration = 24 * time.Hour
+
+	accessToken, err := jwt.GenerateToken(
+		user.ID,
+		user.Role,
+		s.config.JWTSecret,
+		tokenDuration,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.LoginResponse{
+		AccessToken: accessToken,
+		TokenType:   "Bearer",
+		ExpiresIn:   int64(tokenDuration.Seconds()),
+		User:        mapUserResponse(user),
+	}, nil
 }

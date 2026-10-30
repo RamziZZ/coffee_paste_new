@@ -16,6 +16,9 @@ type Config struct {
 	MidtransClientKey  string
 	MidtransMerchantName string
 	MidtransEnvironment  string
+
+	GoogleClientID          string
+	FirebaseCredentialsFile string
 }
 
 func LoadConfig() Config {
@@ -33,6 +36,9 @@ func LoadConfig() Config {
 		MidtransClientKey:    getEnv("MIDTRANS_CLIENT_KEY", ""),
 		MidtransMerchantName: getEnv("MIDTRANS_MERCHANT_NAME", "Coffee Paste"),
 		MidtransEnvironment:  getEnv("MIDTRANS_ENVIRONMENT", "sandbox"),
+
+		GoogleClientID:          getEnv("GOOGLE_CLIENT_ID", ""),
+		FirebaseCredentialsFile: getEnv("FIREBASE_CREDENTIALS_FILE", ""),
 	}
 }
 

@@ -23,3 +23,14 @@ type Meta struct {
 	Total       int `json:"total"`
 	UnreadCount int `json:"unread_count"`
 }
+
+// RegisterDeviceTokenRequest adalah body untuk mendaftarkan token FCM.
+type RegisterDeviceTokenRequest struct {
+	FCMToken   string `json:"fcm_token" binding:"required"`
+	DeviceType string `json:"device_type" binding:"required,oneof=android ios web"`
+}
+
+// DeleteDeviceTokenRequest adalah body untuk menghapus token FCM.
+type DeleteDeviceTokenRequest struct {
+	FCMToken string `json:"fcm_token" binding:"required"`
+}

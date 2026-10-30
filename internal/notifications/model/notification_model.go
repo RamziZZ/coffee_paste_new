@@ -49,3 +49,13 @@ type ListFilter struct {
 	Limit  int
 	Offset int
 }
+
+// DeviceToken adalah satu baris token FCM milik satu user/device.
+type DeviceToken struct {
+	ID         string
+	UserID     string
+	FCMToken   string
+	DeviceType string
+	CreatedAt  string
+	UpdatedAt  string
+}

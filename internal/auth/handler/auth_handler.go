@@ -232,3 +232,49 @@ func (h *AuthHandler) RegisterCustomer(c *gin.Context) {
 		"data":    result,
 	})
 }
+
+// GOOGLE LOGIN
+func (h *AuthHandler) GoogleLogin(c *gin.Context) {
+	var req dto.GoogleLoginRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"message": "ID token Google wajib diisi",
+		})
+		return
+	}
+	result, err := h.service.LoginWithGoogle(
+		c.Request.Context(),
+		req,
+	)
+	if err != nil {
+		switch {
+		case errors.Is(err, service.ErrGoogleNotConfigured):
+			c.JSON(http.StatusServiceUnavailable, gin.H{
+				"success": false,
+				"message": "Login Google belum dikonfigurasi di server",
+			})
+		case errors.Is(err, service.ErrInvalidGoogleToken):
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"success": false,
+				"message": "Token Google tidak valid atau sudah kedaluwarsa",
+			})
+		case errors.Is(err, service.ErrUserInactive):
+			c.JSON(http.StatusForbidden, gin.H{
+				"success": false,
+				"message": "Akun tidak aktif",
+			})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"message": "Terjadi kesalahan pada server",
+			})
+		}
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Login dengan Google berhasil",
+		"data":    result,
+	})
+}

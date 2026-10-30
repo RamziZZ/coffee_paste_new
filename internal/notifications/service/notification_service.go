@@ -3,10 +3,12 @@ package service
 import (
 	"context"
 	"log"
+	"time"
 
 	"coffee_paste_backend/internal/notifications/dto"
 	"coffee_paste_backend/internal/notifications/model"
 	"coffee_paste_backend/internal/notifications/repository"
+	"coffee_paste_backend/pkg/fcm"
 )
 
 const (
@@ -15,14 +17,20 @@ const (
 )
 
 type NotificationService struct {
-	repository *repository.NotificationRepository
+	repository      *repository.NotificationRepository
+	fcmTokenRepo    *repository.FCMTokenRepository
+	fcmClient       *fcm.Client
 }
 
 func NewNotificationService(
 	repository *repository.NotificationRepository,
+	fcmTokenRepo *repository.FCMTokenRepository,
+	fcmClient *fcm.Client,
 ) *NotificationService {
 	return &NotificationService{
-		repository: repository,
+		repository:   repository,
+		fcmTokenRepo: fcmTokenRepo,
+		fcmClient:    fcmClient,
 	}
 }
 
@@ -76,6 +84,9 @@ func (s *NotificationService) Notify(
 			userID, notifType, err,
 		)
 	}
+
+	// Push notification via FCM (best-effort, async)
+	s.pushToUsers([]string{userID}, title, body, notifType, refID)
 }
 
 // NotifyStaff mengirim notifikasi ke semua user aktif role kasir/admin.
@@ -121,6 +132,56 @@ func (s *NotificationService) NotifyStaff(
 	if err := s.repository.CreateBatch(ctx, notifications); err != nil {
 		log.Printf("Gagal broadcast notifikasi ke staff: %v", err)
 	}
+
+	// Push notification via FCM (best-effort, async)
+	s.pushToUsers(staffIDs, title, body, notifType, refID)
+}
+
+// pushToUsers mengirim push notification FCM ke daftar user.
+// Best-effort: kegagalan hanya dicatat di log.
+func (s *NotificationService) pushToUsers(
+	userIDs []string,
+	title string,
+	body string,
+	notifType string,
+	refID string,
+) {
+	if s.fcmClient == nil || !s.fcmClient.Enabled() {
+		return
+	}
+
+	if len(userIDs) == 0 {
+		return
+	}
+
+	go func() {
+		// Konteks timeout terpisah karena goroutine tidak
+		// boleh memakai konteks request yang sudah selesai.
+		ctx, cancel := context.WithTimeout(
+			context.Background(),
+			10*time.Second,
+		)
+		defer cancel()
+
+		tokens, err := s.fcmTokenRepo.GetTokensByUserIDs(ctx, userIDs)
+		if err != nil {
+			log.Printf("FCM: gagal mengambil device tokens: %v", err)
+			return
+		}
+
+		if len(tokens) == 0 {
+			return
+		}
+
+		data := map[string]string{
+			"type": notifType,
+		}
+		if refID != "" {
+			data["ref_id"] = refID
+		}
+
+		s.fcmClient.SendToTokens(ctx, tokens, title, body, data)
+	}()
 }
 
 // List mengambil daftar notifikasi milik user yang login.
@@ -193,4 +254,23 @@ func (s *NotificationService) MarkAllRead(
 	userID string,
 ) error {
 	return s.repository.MarkAllRead(ctx, userID)
+}
+
+// RegisterDeviceToken mendaftarkan token FCM milik user yang login.
+func (s *NotificationService) RegisterDeviceToken(
+	ctx context.Context,
+	userID string,
+	req dto.RegisterDeviceTokenRequest,
+) error {
+	return s.fcmTokenRepo.Upsert(ctx, userID, req.FCMToken, req.DeviceType)
+}
+
+// DeleteDeviceToken menghapus token FCM milik user yang login
+// (dipakai saat logout / unregister notifikasi di client).
+func (s *NotificationService) DeleteDeviceToken(
+	ctx context.Context,
+	userID string,
+	fcmToken string,
+) error {
+	return s.fcmTokenRepo.Delete(ctx, userID, fcmToken)
 }

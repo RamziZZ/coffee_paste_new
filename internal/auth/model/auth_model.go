@@ -13,4 +13,5 @@ type User struct {
 	IsActive     bool      `json:"is_active"`
 	CreatedAt    time.Time `json:"created_at"`
 	PendingEmail *string   `json:"pending_email,omitempty"`
+	GoogleID     *string   `json:"-"`
 }

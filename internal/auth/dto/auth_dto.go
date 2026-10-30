@@ -36,3 +36,9 @@ type RegisterCustomerRequest struct {
 	Password string `json:"password" binding:"required,min=8"`
 	Phone    string `json:"phone"`
 }
+
+// GoogleLoginRequest adalah body untuk login/daftar via Google.
+// IDToken didapatkan dari client setelah Google Sign-In (SDK web/mobile).
+type GoogleLoginRequest struct {
+	IDToken string `json:"id_token" binding:"required"`
+}
